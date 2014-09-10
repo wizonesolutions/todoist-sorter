@@ -1,5 +1,6 @@
 var interval;
 var api;
+var frequency = Meteor.settings.checkFrequency || 300000;
 
 Meteor.startup(function () {
   if (Meteor.settings && Meteor.settings.todoistEmail && Meteor.settings.todoistPassword) {
@@ -14,7 +15,7 @@ Meteor.startup(function () {
     }
     if (api.user) {
       checkForNewTasks();
-      interval = Meteor.setInterval(checkForNewTasks, (300000)); // every 5 minutes
+      interval = Meteor.setInterval(checkForNewTasks, frequency); // every 5 minutes
     }
     else {
       console.log("WTF? Fix me pls.")
@@ -27,15 +28,14 @@ main = function (argv) {
 }
 
 checkForNewTasks = function () {
-  console.log("Checking for new tasks...");
-  // api.request('getUncompletedItems', { project_id: api.user.inbox_project }, function (err, res, data) {
-  api.request('query', { queries: JSON.stringify(['##']) }, function (err, res, data) {
+  console.log("Checking for new tasks now and every" + (frequency / 1000 / 60) + " minutes...");
+  api.request('getUncompletedItems', { project_id: api.user.inbox_project }, function (err, res, data) {
+  // api.request('query', { queries: JSON.stringify(['##']) }, function (err, res, data) {
     if (err) {
       console.log('Error checking for new tasks:');
       console.log(err);
     }
     else {
-      data = data.data; // lol
       if (! _.isEmpty(data)) {
         api.request('getProjects', {}, function (err2, res2, data2) {
           if (err2) {
@@ -44,9 +44,6 @@ checkForNewTasks = function () {
           }
           else {
             console.log("Finding ##project assignments...")
-
-            // Reduce to only inbox items.
-            data = _.where(data, { id: api.user.inbox_project });
 
             _.each(data, function (item, index) {
               var matches;
