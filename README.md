@@ -1,6 +1,6 @@
 # Todoist Sorter - put tasks into projects with `##`
 
-[Todoist](https://todoist.com) has a problem. There's no good keyboard shortcut
+[Todoist](https://todoist.com) has a problem. There are no good keyboard shortcut
 to move tasks into projects at editing time. You have to use the mouse, and it
 breaks your train of thought if you process your tasks GTD style.
 
