@@ -20,9 +20,10 @@ Then clone this app from GitHub and run it with
 # Configuration
 
 Copy `settings.json.example` to `settings.json` and replace the parameters with
-your Todoist credentials and desired update frequency. There are a few API calls
-each time, so I wouldn't update too often or Todoist might think it's abuse.
-I haven't had any issues with a 5-minute interval so far.
+your Todoist credentials and desired update frequency (you can actually delete
+the line with update frequency if you want; the default is 5 minutes). There are
+a few API calls each time, so I wouldn't update too often or Todoist might think
+it's abuse. I haven't had any issues with a 5-minute interval so far.
 
 ## Privacy/security
 

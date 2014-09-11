@@ -1,6 +1,6 @@
 var interval;
 var api;
-var frequency = Meteor.settings.checkFrequency || 300000;
+var frequency = (+Meteor.settings.todoistCheckFrequency * 60000) || 300000;
 
 Meteor.startup(function () {
   if (Meteor.settings && Meteor.settings.todoistEmail && Meteor.settings.todoistPassword) {
