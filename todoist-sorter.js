@@ -28,7 +28,7 @@ main = function (argv) {
 }
 
 checkForNewTasks = function () {
-  console.log("Checking for new tasks now and every" + (frequency / 1000 / 60) + " minutes...");
+  console.log("Checking for new tasks now and every " + (frequency / 1000 / 60) + " minutes...");
   api.request('getUncompletedItems', { project_id: api.user.inbox_project }, function (err, res, data) {
   // api.request('query', { queries: JSON.stringify(['##']) }, function (err, res, data) {
     if (err) {
