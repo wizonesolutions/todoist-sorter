@@ -40,7 +40,7 @@ often they have to be).
 
 First see known issues below.
 
-Use the [issue list](/wizonesolutions/todoist-sorter/issues) otherwise.
+Use the [issue list](https://github.com/wizonesolutions/todoist-sorter/issues) otherwise.
 
 If there is no GitHub issue for the known issue, you are
 welcome to open one.
@@ -68,4 +68,4 @@ project with `impo` in its name.
 
 This Meteor package was written by [WizOne Solutions](http://www.wizonesolutions.com), a Meteor and Drupal CMS developer.
 
-My largest Meteor app so far is [https://github.com/spendflow/spendflow](Spendflow). It has a private beta. Check it out.
+My largest Meteor app so far is [Spendflow](https://github.com/spendflow/spendflow). It has a private beta. Check it out.
