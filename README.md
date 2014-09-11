@@ -4,8 +4,12 @@
 to move tasks into projects at editing time. You have to use the mouse, and it
 breaks your train of thought if you process your tasks GTD style.
 
-**This app fixes that.** Simply type `##<project name>` (e.g. `##work`) anywhere in your
-project description, and every 5 minutes (configurable) this app will use the
+**This app fixes that.**
+
+When you create tasks in Todoist, simply add `##<project name>` (e.g. `##work`)
+anywhere in your task name (much like you would use `@label`s).
+
+Every 5 minutes (by default), this app will use the
 Todoist API to move those tasks into the desired projects. You can also stop
 and start the app to do it immediately.
 
@@ -45,6 +49,10 @@ Use the [issue list](https://github.com/wizonesolutions/todoist-sorter/issues) o
 
 If there is no GitHub issue for the known issue, you are
 welcome to open one.
+
+# Stopping
+
+You can stop Meteor apps by pressing `Ctrl + C`.
 
 # Known issues
 
