@@ -36,7 +36,7 @@ checkForNewTasks = function () {
     }
     else {
       if (! _.isEmpty(data)) {
-        console.log("Finding ##project assignments...")
+        console.log("Scanning Todoist inbox for projects to move...")
 
         var data2;
 
@@ -45,6 +45,8 @@ checkForNewTasks = function () {
           var search = /(.*)##([^\s]+)(.*)/;
           if (matches = search.exec(item.content)) {
             // console.log(item);
+
+            console.log("Moving task /" + item.content + "/...");
 
             // Only populate projects if we actually have any tasks to process.
             if (_.isEmpty(data2)) {
