@@ -70,6 +70,10 @@ You can stop Meteor apps by pressing `Ctrl + C`.
 again. This is safe since the only thing that is stored is your user info from
 Todoist (by the [todoist](https://github.com/wizonesolutions/meteor-todoist)
 package).
+- **Occasionally**, the app will struggle with Todoist tasks added from Gmail. This is because Todoist actually
+stores the task name as `link to Gmail (Email subject line)`. When you add `##project` to this,
+it gets placed inside the parentheses, making the app unable to match it.
+**Workaround**: Just move `##project` to the beginning of the task name.
 
 ## Roadmap
 
@@ -77,6 +81,8 @@ package).
 `#project# instead of ##project?`
 - Case-insensitive project name matching.
 - Maybe label tasks that are moved by this app (for premium users)?
+- Compile a list of which projects items will be moved to and submit the whole thing to `moveItems` instead
+of calling it every time.
 
 ## Author
 
