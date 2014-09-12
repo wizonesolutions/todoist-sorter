@@ -46,7 +46,7 @@ checkForNewTasks = function () {
           if (matches = search.exec(item.content)) {
             // console.log(item);
 
-            console.log("Moving task /" + item.content + "/...");
+            console.log("Moving task \"" + item.content + "\"...");
 
             // Only populate projects if we actually have any tasks to process.
             if (_.isEmpty(data2)) {
