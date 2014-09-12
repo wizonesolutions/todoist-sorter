@@ -63,6 +63,10 @@ checkForNewTasks = function () {
               data2 = projectsRes.result;
             }
 
+            // @todo: Lowercase all names in data2 so the later findWhere calls can match
+            // case-insensitively. Store todoistSorterOriginalName with the original case for when
+            // we display messages later.
+
             // What word actually matched?
             projectName = matches[2];
             console.log("Project name: " + projectName)
@@ -70,10 +74,62 @@ checkForNewTasks = function () {
             // OK great, now try to find a project with this name.
             var project = _.findWhere(data2, { name: projectName });
 
+            if (_.isEmpty(project)) {
+              // See if we have a partial match with exactly one project.
+              var projectNames = _.pluck(data2, 'name');
+              var matchingProjects = _.filter(projectNames, function (value) {
+                return _s.include(value, projectName);
+              });
+
+              console.log('Might mean: ');
+              console.log(matchingProjects);
+
+              if (matchingProjects.length == 1) {
+                project = _.findWhere(data2, { name: _.first(matchingProjects) });
+              }
+              else {
+                console.log('Using closest match...');
+                // Compile array of Levenshtein distances
+                var matchDistances = [];
+                _.each(matchingProjects, function (match) {
+                  matchDistances.push({ name: match, distance: _.levenshtein(projectName, match), length: match.length });
+                });
+
+                // console.log(matchDistances);
+
+                // Use the name from the object having the lowest Levenshtein distance.
+                var sortedMatches = _.sortBy(matchDistances, 'distance');
+                // console.log(sortedMatches);
+                var firstMatch = _.first(sortedMatches);
+                // console.log(firstMatch);
+
+                // Are there other elements with the same distance?
+                var contenders = _.where(sortedMatches, { distance: firstMatch.distance });
+
+                if (contenders.length == 1) {
+                  project = _.findWhere(data2, { name: firstMatch.name });
+                }
+                else {
+                  console.log("Still multiple matches, going with the one sorted higher in Todoist...")
+                  // If we have multiple matches, go with the shorter name.
+                  // If they are the same length, _.min() will return the first one.
+                  // We'll sort by project name length to make sure.
+                  var shortest = _.min(_.sortBy(contenders, 'length'), function (contender) {
+                    return contender.length;
+                  });
+
+                  project = _.findWhere(data2, { name: shortest.name });
+                }
+
+                // Partial matching ain't easy.
+              }
+            }
+
             if (project) {
               var projectId = project.id;
 
-              console.log("Project ID: " + projectId)
+              console.log("Matched project name: " + project.name);
+              // console.log("Project ID: " + projectId)
 
               // Finally, move the item to this project. Then we are done.
               var projectMapping = {};
