@@ -86,44 +86,46 @@ checkForNewTasks = function () {
               console.log('Might mean: ');
               console.log(matchingProjects);
 
-              if (matchingProjects.length == 1) {
-                project = _.findWhere(data2, { name: _.first(matchingProjects) });
-              }
-              else {
-                console.log('Using closest match...');
-                // Compile array of Levenshtein distances
-                var matchDistances = [];
-                _.each(matchingProjects, function (match) {
-                  matchDistances.push({ name: match, distance: _.levenshtein(projectName, match), length: match.length });
-                });
-
-                // console.log(matchDistances);
-
-                // Use the name from the object having the lowest Levenshtein distance.
-                var sortedMatches = _.sortBy(matchDistances, 'distance');
-                // console.log(sortedMatches);
-                var firstMatch = _.first(sortedMatches);
-                // console.log(firstMatch);
-
-                // Are there other elements with the same distance?
-                var contenders = _.where(sortedMatches, { distance: firstMatch.distance });
-
-                if (contenders.length == 1) {
-                  project = _.findWhere(data2, { name: firstMatch.name });
+              if (! _.isEmpty(matchingProjects)) {
+                if (matchingProjects.length == 1) {
+                  project = _.findWhere(data2, { name: _.first(matchingProjects) });
                 }
                 else {
-                  console.log("Still multiple matches, going with the one sorted higher in Todoist...")
-                  // If we have multiple matches, go with the shorter name.
-                  // If they are the same length, _.min() will return the first one.
-                  // We'll sort by project name length to make sure.
-                  var shortest = _.min(_.sortBy(contenders, 'length'), function (contender) {
-                    return contender.length;
+                  console.log('Using closest match...');
+                  // Compile array of Levenshtein distances
+                  var matchDistances = [];
+                  _.each(matchingProjects, function (match) {
+                    matchDistances.push({ name: match, distance: _.levenshtein(projectName, match), length: match.length });
                   });
 
-                  project = _.findWhere(data2, { name: shortest.name });
-                }
+                  // console.log(matchDistances);
 
-                // Partial matching ain't easy.
+                  // Use the name from the object having the lowest Levenshtein distance.
+                  var sortedMatches = _.sortBy(matchDistances, 'distance');
+                  // console.log(sortedMatches);
+                  var firstMatch = _.first(sortedMatches);
+                  // console.log(firstMatch);
+
+                  // Are there other elements with the same distance?
+                  var contenders = _.where(sortedMatches, { distance: firstMatch.distance });
+
+                  if (contenders.length == 1) {
+                    project = _.findWhere(data2, { name: firstMatch.name });
+                  }
+                  else {
+                    console.log("Still multiple matches, going with the one sorted higher in Todoist...")
+                    // If we have multiple matches, go with the shorter name.
+                    // If they are the same length, _.min() will return the first one.
+                    // We'll sort by project name length to make sure.
+                    var shortest = _.min(_.sortBy(contenders, 'length'), function (contender) {
+                      return contender.length;
+                    });
+
+                    project = _.findWhere(data2, { name: shortest.name });
+                  }
+
+                  // Partial matching ain't easy.
+                }
               }
             }
 
