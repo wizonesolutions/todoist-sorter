@@ -1,6 +1,6 @@
 # Todoist Sorter - put tasks into projects with `##`
 
-[Todoist](https://todoist.com) has a problem. There are no good keyboard shortcut
+[Todoist](https://todoist.com) has a problem. There are no good keyboard shortcuts
 to move tasks into projects at editing time. You have to use the mouse, and it
 breaks your train of thought if you process your tasks GTD style.
 
@@ -16,7 +16,6 @@ as long as it is the shortest project name beginning with `w`. You can use parti
 names from anywhere in the project name, so `##proc` will match `work/process-improvement`.
 
 You cannot use spaces, and matches are still case-sensitive (it's on the roadmap to make them case-insensitive).
-
 
 Every 5 minutes (by default), this app will use the
 Todoist API to move those tasks into the desired projects. You can also stop
