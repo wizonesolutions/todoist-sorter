@@ -30,69 +30,81 @@ main = function (argv) {
 checkForNewTasks = function () {
   console.log("Checking for new tasks now and every " + (frequency / 1000 / 60) + " minutes...");
   api.request('getUncompletedItems', { project_id: api.user.inbox_project }, function (err, res, data) {
-  // api.request('query', { queries: JSON.stringify(['##']) }, function (err, res, data) {
     if (err) {
       console.log('Error checking for new tasks:');
       console.log(err);
     }
     else {
       if (! _.isEmpty(data)) {
-        api.request('getProjects', {}, function (err2, res2, data2) {
-          if (err2) {
-            console.log("Error getting projects");
-            console.log(err2);
-          }
-          else {
-            console.log("Finding ##project assignments...")
+        console.log("Finding ##project assignments...")
 
-            _.each(data, function (item, index) {
-              var matches;
-              var search = /(.*)##([^\s]+)(.*)/;
-              if (matches = search.exec(item.content)) {
-                // console.log(item);
+        var data2;
 
-                // What word actually matched?
-                projectName = matches[2];
-                console.log("Project name: " + projectName)
+        _.each(data, function (item, index) {
+          var matches;
+          var search = /(.*)##([^\s]+)(.*)/;
+          if (matches = search.exec(item.content)) {
+            // console.log(item);
 
-                // OK great, now try to find a project with this name.
-                var project = _.findWhere(data2, { name: projectName });
+            // Only populate projects if we actually have any tasks to process.
+            if (_.isEmpty(data2)) {
+              projectsRes = Async.runSync(function (done) {
+                api.request('getProjects', {}, function (err2, res2, data2) {
+                  if (err2) {
+                    console.log("Error getting projects");
+                    done(err2);
+                  }
+                  else {
+                    done(null, data2);
+                  }
+                });
+              });
 
-                if (project) {
-                  var projectId = project.id;
+              data2 = projectsRes.result;
+            }
 
-                  console.log("Project ID: " + projectId)
+            // What word actually matched?
+            projectName = matches[2];
+            console.log("Project name: " + projectName)
 
-                  // Finally, move the item to this project. Then we are done.
-                  var projectMapping = {};
-                  projectMapping[item.project_id] = [item.id.toString()];
-                  api.request('moveItems', { project_items: JSON.stringify(projectMapping), to_project: projectId.toString() }, function (err3, res3, data3) {
-                    if (err3) {
-                      console.log("Problem moving task");
-                      console.log(err3);
+            // OK great, now try to find a project with this name.
+            var project = _.findWhere(data2, { name: projectName });
+
+            if (project) {
+              var projectId = project.id;
+
+              console.log("Project ID: " + projectId)
+
+              // Finally, move the item to this project. Then we are done.
+              var projectMapping = {};
+              projectMapping[item.project_id] = [item.id.toString()];
+              api.request('moveItems', { project_items: JSON.stringify(projectMapping), to_project: projectId.toString() }, function (err3, res3, data3) {
+                if (err3) {
+                  console.log("Problem moving task");
+                  console.log(err3);
+                }
+                else {
+                  console.log('Task "' + item.content + '" moved to project "' + project.name + '"');
+
+                  api.request('updateItem', { id: item.id, content: (matches[1] + matches[3]).trim() }, function (err4, res4, data4) {
+                    if (err4) {
+                      console.log("Couldn't fix task name");
+                      console.log(err4);
                     }
                     else {
-                      console.log('Task "' + item.content + '" moved to project "' + project.name + '"');
-
-                      api.request('updateItem', { id: item.id, content: (matches[1] + matches[3]).trim() }, function (err4, res4, data4) {
-                        if (err4) {
-                          console.log("Couldn't fix task name");
-                          console.log(err4);
-                        }
-                        else {
-                          // Silence.
-                        }
-                      });
+                      // Silence.
                     }
                   });
                 }
-                else {
-                  console.log("No matching project for " + matches[2])
-                }
-              }
-            });
+              });
+            }
+            else {
+              console.log("No matching project for " + matches[2])
+            }
           }
         });
+
+        console.log("Done checking tasks.");
       }
       else {
         console.log("No data");
