@@ -14,6 +14,7 @@ Meteor.startup(function () {
       console.log(err)
     }
     if (api.user) {
+      console.log("Checking for new tasks now and every " + (frequency / 1000 / 60) + " minutes...");
       checkForNewTasks();
       interval = Meteor.setInterval(checkForNewTasks, frequency); // every 5 minutes
     }
@@ -28,7 +29,6 @@ main = function (argv) {
 }
 
 checkForNewTasks = function () {
-  console.log("Checking for new tasks now and every " + (frequency / 1000 / 60) + " minutes...");
   api.request('getUncompletedItems', { project_id: api.user.inbox_project }, function (err, res, data) {
     if (err) {
       console.log('Error checking for new tasks:');
